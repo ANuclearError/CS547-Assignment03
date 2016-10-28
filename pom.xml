@@ -39,7 +39,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.aidanogrady.cs547.assignment02.Application</mainClass>
+                            <mainClass>com.aidanogrady.cs547.assignment03.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
