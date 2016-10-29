@@ -1,5 +1,6 @@
 package com.aidanogrady.cs547.assignment03.util;
 
+import com.aidanogrady.cs547.assignment03.Customer;
 import com.aidanogrady.cs547.assignment03.Requirement;
 
 import java.io.*;
@@ -25,6 +26,11 @@ public class FileParser {
      * The list of requirements gathered from the file.
      */
     private List<Requirement> requirements;
+
+    /**
+     * The customers obtained from the file.
+     */
+    private List<Customer> customers;
 
     /**
      * Constructs a new file parser.
@@ -71,11 +77,9 @@ public class FileParser {
         List<String> depLines = lines.subList(depStart + 1, custStart);
         List<String> custLines = lines.subList(custStart + 1, end);
 
-        requirements = reqs(reqLines, levels);
-        if (requirements == null) {
-            return false;
-        }
-        requirements = deps(depLines,requirements);
+        requirements(reqLines, levels);
+        dependecies(depLines);
+        customers(custLines);
         return true;
     }
 
@@ -85,24 +89,22 @@ public class FileParser {
      *
      * @param lines the lines that correspond to the requirements
      * @param levels the number of levels of requirements possible.
-     * @return list of requirements
      */
-    private List<Requirement> reqs(List<String> lines, int levels) {
-        List<Requirement> requirements = new ArrayList<>();
+    private void requirements(List<String> lines, int levels) {
+        requirements = new ArrayList<>();
         for (int i = 1; i <= levels; i++) {
             int size = Integer.parseInt(lines.get((i - 1) * 2));
             String[] arr = lines.get(i * 2 - 1).split("\\s");
 
             if (size != arr.length) {
                 System.out.println("Given size does not match actual size.");
-                return null;
+                break;
             }
 
             for (String s : arr) {
                 requirements.add(new Requirement(i, Integer.parseInt(s)));
             }
         }
-        return requirements;
     }
 
     /**
@@ -110,10 +112,8 @@ public class FileParser {
      * obtained from the given list of files.
      *
      * @param lines the dependencies to update the requirements with
-     * @param reqs the requirements to be updated
-     * @return the updated requirements
      */
-    private List<Requirement> deps(List<String> lines, List<Requirement> reqs) {
+    private void dependecies(List<String> lines) {
         for (String line : lines) {
             String[] arr = line.split("\\s");
             if (arr.length != 2) {
@@ -122,17 +122,44 @@ public class FileParser {
                 int firstID = Integer.parseInt(arr[0]) - 1;
                 int secondID = Integer.parseInt(arr[1]) - 1;
                 // Probably shouldn't assume ID and index match.
-                reqs.get(firstID).addDependency(reqs.get(secondID));
+                Requirement req = requirements.get(secondID);
+                requirements.get(firstID).addDependency(req);
             }
         }
-        return reqs;
+    }
+
+    private void customers(List<String> lines) {
+        customers = new ArrayList<>();
+        for (String line : lines) {
+            String[] arr = line.split(" ");
+            int profit = Integer.parseInt(arr[0]);
+            int reqSize = Integer.parseInt(arr[1]);
+            List<Integer> reqs = new ArrayList<>();
+            for (int i = 0; i < reqSize; i++) {
+                int id = Integer.parseInt(arr[i + 2]);
+                if (requirements.size() > id) {
+                    reqs.add(id);
+                }
+            }
+            customers.add(new Customer(profit, reqs));
+        }
     }
 
     /**
      * Returns the requirements parsed by this file.
+     * 
      * @return requirements
      */
     public List<Requirement> getRequirements() {
         return requirements;
+    }
+
+    /**
+     * Returns the customers parsed by this file.
+     *
+     * @return customers
+     */
+    public List<Customer> getCustomers() {
+        return customers;
     }
 }

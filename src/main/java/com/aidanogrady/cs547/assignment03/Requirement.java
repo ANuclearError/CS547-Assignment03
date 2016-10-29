@@ -1,8 +1,6 @@
 package com.aidanogrady.cs547.assignment03;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -24,6 +22,9 @@ public class Requirement {
      */
     private int cost;
 
+    /**
+     * The dependencies of this requirement.
+     */
     private Set<Requirement> dependencies;
 
     /**
@@ -36,6 +37,33 @@ public class Requirement {
         this.level = level;
         this.cost = cost;
         dependencies = new HashSet<>();
+    }
+
+    /**
+     * Returns the level of this requirement.
+     *
+     * @return level
+     */
+    public int getLevel() {
+        return level;
+    }
+
+    /**
+     * Returns the cost of this requirement.
+     *
+     * @return cost
+     */
+    public int getCost() {
+        return cost;
+    }
+
+    /**
+     * Returns the dependencies of this requirement.
+     *
+     * @return dependencies
+     */
+    public Set<Requirement> getDependencies() {
+        return dependencies;
     }
 
     /**
