@@ -1,5 +1,10 @@
 package com.aidanogrady.cs547.assignment03;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Each requirement that has been identified. Different customers may require
  * different requirements, which all have different costs and level of
@@ -10,11 +15,6 @@ package com.aidanogrady.cs547.assignment03;
  */
 public class Requirement {
     /**
-     * The unique id of this requirement.
-     */
-    private int id;
-
-    /**
      * The level of this requirement.
      */
     private int level;
@@ -24,25 +24,36 @@ public class Requirement {
      */
     private int cost;
 
+    private Set<Requirement> dependencies;
+
     /**
      * Consturcts a new requirement.
      *
-     * @param id the id of the requirement.
      * @param level the level of the requirement.
      * @param cost the cost of the requirement.
      */
-    public Requirement(int id, int level, int cost) {
-        this.id = id;
+    public Requirement(int level, int cost) {
         this.level = level;
         this.cost = cost;
+        dependencies = new HashSet<>();
+    }
+
+    /**
+     * Adds the given dependency to this requirements list of dependencies.
+     *
+     * @param dependency the requirement that this depends on.
+     * @return addition is successful
+     */
+    public boolean addDependency(Requirement dependency) {
+        return dependencies.add(dependency);
     }
 
     @Override
     public String toString() {
         return "Req{" +
-                "id=" + id +
-                ", level=" + level +
+                "level=" + level +
                 ", cost=" + cost +
+                ", dependencies=" + dependencies.size() +
                 '}';
     }
 }

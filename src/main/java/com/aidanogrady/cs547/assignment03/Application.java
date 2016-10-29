@@ -22,8 +22,9 @@ public class Application {
         System.out.println();
 
 
-        String fileName = "data/classic/nrp3.txt";
+        String fileName = "data/classic/nrp1.txt";
         File file = new File(fileName);
-        FileParser.readFile(file.toPath());
+        FileParser parser = new FileParser(file.toPath());
+        parser.readFile();
     }
 }
