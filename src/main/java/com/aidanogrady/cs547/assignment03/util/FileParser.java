@@ -108,7 +108,7 @@ public class FileParser {
     }
 
     /**
-     * Returns an update of the given requirements to include the dependencies
+     * Performs an update of the given requirements to include the dependencies
      * obtained from the given list of files.
      *
      * @param lines the dependencies to update the requirements with
@@ -128,6 +128,12 @@ public class FileParser {
         }
     }
 
+    /**
+     * Extracts the customer information from the related lines taken from the
+     * file, parsing the file to ensure create formatting of each customer.
+     *
+     * @param lines the lines from file that define customers.
+     */
     private void customers(List<String> lines) {
         customers = new ArrayList<>();
         for (String line : lines) {
@@ -147,7 +153,7 @@ public class FileParser {
 
     /**
      * Returns the requirements parsed by this file.
-     * 
+     *
      * @return requirements
      */
     public List<Requirement> getRequirements() {
