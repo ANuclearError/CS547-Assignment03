@@ -53,10 +53,7 @@ public class NRPEvaluator implements Evaluator<String> {
             }
         }
 
-        if (cost > nrp.getBudget()) {
-            cost = Double.MAX_VALUE;
-        }
-        return cost;
+        return Math.abs(cost - nrp.getBudget());
     }
 
     /**
