@@ -59,9 +59,23 @@ public class Customer {
         return requirements;
     }
 
-
+    /**
+     * Sets the requirements of this customer to the given.
+     *
+     * @param requirements the new requirements
+     */
     public void setRequirements(List<Integer> requirements) {
         this.requirements = requirements;
+    }
+
+    /**
+     * Returns whether the customer has the given requirement or not.
+     *
+     * @param requirement the requirement being checked
+     * @return customer has requirement
+     */
+    public boolean hasRequirement(int requirement) {
+        return requirements.contains(requirement);
     }
 
     @Override

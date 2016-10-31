@@ -130,4 +130,23 @@ public class NextReleaseProblem {
     public void setRequirements(List<Requirement> requirements) {
         this.requirements = requirements;
     }
+
+    /**
+     * Returns the score of the given requirement, by examining each customers'
+     * own requirements.
+     *
+     * @param requirementIndex the requirement being scored.
+     * @return score
+     */
+    public double score(int requirementIndex) {
+        if (requirementIndex < 0 || requirementIndex >= requirements.size())
+            return 0;
+        double score = 0;
+        for (Customer customer : customers) {
+            if (customer.hasRequirement(requirementIndex)) {
+                score += customer.getWeight();
+            }
+        }
+        return score;
+    }
 }

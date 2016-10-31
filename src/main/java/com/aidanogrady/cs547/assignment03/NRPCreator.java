@@ -1,10 +1,8 @@
 package com.aidanogrady.cs547.assignment03;
 
 import com.aidanogrady.cs547.assignment03.model.NextReleaseProblem;
-import com.aidanogrady.cs547.assignment03.model.Requirement;
 import com.google.inject.Inject;
-import com.sun.org.apache.regexp.internal.RE;
-import org.opt4j.core.genotype.PermutationGenotype;
+import org.opt4j.core.genotype.BooleanGenotype;
 import org.opt4j.core.problem.Creator;
 
 import java.util.Random;
@@ -15,7 +13,7 @@ import java.util.Random;
  * @author Aidan O'Grady
  * @since 0.2
  */
-public class NRPCreator implements Creator<PermutationGenotype<Requirement>> {
+public class NRPCreator implements Creator<BooleanGenotype> {
     /**
      * The problem representation.
      */
@@ -38,14 +36,9 @@ public class NRPCreator implements Creator<PermutationGenotype<Requirement>> {
     }
 
     @Override
-    public PermutationGenotype<Requirement> create() {
-        PermutationGenotype<Requirement> genotype = new PermutationGenotype<>();
-
-        int size = nrp.getRequirements().size();
-        int budget = 0;
-        while (nrp.getBudget() > budget) { // Fill genotype till budget met.
-            genotype.add(nrp.getRequirement(random.nextInt(size)));
-        }
+    public BooleanGenotype create() {
+        BooleanGenotype genotype = new BooleanGenotype();
+        genotype.init(random, nrp.getRequirements().size());
         return genotype;
     }
 }
