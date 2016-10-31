@@ -18,7 +18,7 @@ public class NRPEvaluator implements Evaluator<String> {
     /**
      * The problem representation.
      */
-    private NextReleaseProblem nrp;
+    protected NextReleaseProblem nrp;
 
     /**
      * Constructs a new NRP evaluator.
