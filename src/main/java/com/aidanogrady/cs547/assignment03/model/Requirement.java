@@ -1,4 +1,4 @@
-package com.aidanogrady.cs547.assignment03;
+package com.aidanogrady.cs547.assignment03.model;
 
 import java.util.HashSet;
 import java.util.Set;

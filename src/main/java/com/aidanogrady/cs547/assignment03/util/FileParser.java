@@ -1,10 +1,9 @@
 package com.aidanogrady.cs547.assignment03.util;
 
-import com.aidanogrady.cs547.assignment03.Customer;
-import com.aidanogrady.cs547.assignment03.Requirement;
+import com.aidanogrady.cs547.assignment03.model.Customer;
+import com.aidanogrady.cs547.assignment03.model.Requirement;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class FileParser {
     /**
      * The path of the file to read the data from.
      */
-    private Path path;
+    private File file;
 
     /**
      * The list of requirements gathered from the file.
@@ -35,15 +34,10 @@ public class FileParser {
     /**
      * Constructs a new file parser.
      *
-     * @param path the file to parse
-     * @throws FileNotFoundException the provided file doesn't exist.
+     * @param file the file to parse
      */
-    public FileParser(Path path) throws FileNotFoundException {
-        this.path = path;
-        File file = path.toFile();
-        if (!file.isFile()) {
-            throw new FileNotFoundException();
-        }
+    public FileParser(File file) {
+        this.file = file;
     }
 
     /**
@@ -51,17 +45,21 @@ public class FileParser {
      * or not.
      *
      * @return true if success, otherwise false.
-     * @throws IOException there is a problem parsing the file.
      */
-    public boolean readFile() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(path.toFile()));
+    public boolean readFile() {
         List<String> lines = new ArrayList<>();
-        String line = br.readLine();
-        while (line != null) {
-            if (line.length() > 0) {
-                lines.add(line);
+        BufferedReader br;
+        try {
+            br = new BufferedReader(new FileReader(file));
+            String line = br.readLine();
+            while (line != null) {
+                if (line.length() > 0) {
+                    lines.add(line);
+                }
+                line = br.readLine();
             }
-            line = br.readLine();
+        } catch (IOException e) {
+            return false;
         }
 
         // Start and end points for the three segments of the file.
@@ -136,9 +134,11 @@ public class FileParser {
      */
     private void customers(List<String> lines) {
         customers = new ArrayList<>();
+
+        double weightSum = 0;
         for (String line : lines) {
             String[] arr = line.split(" ");
-            int profit = Integer.parseInt(arr[0]);
+            double weight = Double.parseDouble(arr[0]);
             int reqSize = Integer.parseInt(arr[1]);
             List<Integer> reqs = new ArrayList<>();
             for (int i = 0; i < reqSize; i++) {
@@ -147,7 +147,14 @@ public class FileParser {
                     reqs.add(id);
                 }
             }
-            customers.add(new Customer(profit, reqs));
+            customers.add(new Customer(weight, reqs));
+            weightSum += weight;
+        }
+
+        // Balance the weights so they sum to 1 (or 0.999...)
+        for (Customer cust : customers) {
+            double newWeight = cust.getWeight() / weightSum;
+            cust.setWeight(newWeight);
         }
     }
 

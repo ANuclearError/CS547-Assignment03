@@ -1,4 +1,4 @@
-package com.aidanogrady.cs547.assignment03;
+package com.aidanogrady.cs547.assignment03.model;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class Customer {
     /**
      * The profit of this customer, defining how important they are.
      */
-    private int profit;
+    private double weight;
 
     /**
      * The list of requirements this customer wants.
@@ -24,21 +24,30 @@ public class Customer {
     /**
      * Constructs a new customer.
      *
-     * @param profit the profit of this customer.
+     * @param weight the weight of this customer.
      * @param requirements the requirements of this customer.
      */
-    public Customer(int profit, List<Integer> requirements) {
-        this.profit = profit;
+    public Customer(double weight, List<Integer> requirements) {
+        this.weight = weight;
         this.requirements = requirements;
     }
 
     /**
-     * Returns this customer's profit.
+     * Returns this customer's weight.
      *
-     * @return profit
+     * @return weight
      */
-    public int getProfit() {
-        return profit;
+    public double getWeight() {
+        return weight;
+    }
+
+    /**
+     * Sets the weight of this customer to the given value.
+     *
+     * @param weight the new weight
+     */
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
     /**
@@ -50,10 +59,15 @@ public class Customer {
         return requirements;
     }
 
+
+    public void setRequirements(List<Integer> requirements) {
+        this.requirements = requirements;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
-                "profit=" + profit +
+                "weight=" + weight +
                 ", requirements=" + requirements.size() +
                 '}';
     }
