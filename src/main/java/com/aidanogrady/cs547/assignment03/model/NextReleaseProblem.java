@@ -106,6 +106,12 @@ public class NextReleaseProblem {
         this.customers = customers;
     }
 
+    /**
+     * Returns the requirement found at the given index.
+     *
+     * @param index the index to look for
+     * @return requirement at index if valid index, otherwise null
+     */
     public Requirement getRequirement(int index) {
         if (index < 0 || index >= requirements.size()) {
             return null;

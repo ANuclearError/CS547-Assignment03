@@ -4,10 +4,13 @@ import com.aidanogrady.cs547.assignment03.model.NextReleaseProblem;
 import org.opt4j.core.problem.Evaluator;
 
 /**
- * TODO: Add Class Desc.
+ * The NRPEvaluator is an abstract class that contains the various evaluation
+ * methods required for form fitness functions. Since both single and multiple
+ * objective evaluation require these calculations, the abstract class contains
+ * these implementations.
  *
  * @author Aidan O'Grady
- * @since TODO: Add Version
+ * @since 0.3
  */
 abstract class NRPEvaluator implements Evaluator<String> {
     /**
@@ -55,7 +58,6 @@ abstract class NRPEvaluator implements Evaluator<String> {
                 cost += nrp.getRequirement(i).getCost();
             }
         }
-
         return cost;
     }
 }

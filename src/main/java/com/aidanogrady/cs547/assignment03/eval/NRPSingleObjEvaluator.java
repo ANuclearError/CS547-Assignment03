@@ -48,7 +48,7 @@ public class NRPSingleObjEvaluator extends NRPEvaluator {
      * Evaluates the Single objective fitness of this solution candidate.
      *
      * @param phenotype the solution being evaluated.
-     * @return
+     * @return fitness
      */
     private double eval(String phenotype) {
         double fitness = weight * evalScore(phenotype);
