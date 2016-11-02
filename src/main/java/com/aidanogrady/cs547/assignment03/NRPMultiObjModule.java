@@ -5,45 +5,59 @@ import org.opt4j.core.problem.ProblemModule;
 import org.opt4j.core.start.Constant;
 
 /**
- * The NRPModule contains the configuration of the Opt4J module, ensuring that
- * the proper classes are bound together.
+ * The NRPMultiObjModule is the multi-objective solution to the NRP Problem,
+ * using an evaluator that considers the separate objectives.
  *
  * @author Aidan O'Grady
- * @since 0.2
+ * @since 0.3
  */
-public class NRPModule extends ProblemModule {
-
+public class NRPMultiObjModule extends ProblemModule {
+    /**
+     * The file to read data from.
+     */
     @Constant(value = "file")
     private String file = "C:\\Users\\aidan\\Desktop\\workspace\\CS547-Assignment03\\data\\classic\\nrp1.txt";
 
+    /**
+     * The cost ratio used to determine budget.
+     */
     @Constant(value = "costRatio")
     private double costRatio = 0.3;
 
-    @Constant(value = "weight")
-    private double weight;
-
+    /**
+     * Returns the filename.
+     *
+     * @return file
+     */
     public String getFile() {
         return file;
     }
 
+    /**
+     * Sets the filename to the given string.
+     *
+     * @param file the new filename to read from.
+     */
     public void setFile(String file) {
         this.file = file;
     }
 
+    /**
+     * Returns the cost ratio of this module.
+     *
+     * @return cost ratio
+     */
     public double getCostRatio() {
         return costRatio;
     }
 
+    /**
+     * Sets the cost ratio to the given value.
+     *
+     * @param costRatio the new cost ratio.
+     */
     public void setCostRatio(double costRatio) {
         this.costRatio = costRatio;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
     }
 
     @Override
