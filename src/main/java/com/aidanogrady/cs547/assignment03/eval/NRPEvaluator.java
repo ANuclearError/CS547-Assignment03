@@ -25,24 +25,6 @@ abstract class NRPEvaluator implements Evaluator<String> {
     }
 
     /**
-     * Evaluates the cost of the given solution. The cost is defined as the sum
-     * of each requirements cost.
-     *
-     * @param phenotype the potential solution
-     * @return cost
-     */
-    double evalCost(String phenotype) {
-        double cost = 0;
-        for (int i = 0; i < phenotype.length(); i++) {
-            if (phenotype.charAt(i) == '1') {
-                cost += nrp.getRequirement(i).getCost();
-            }
-        }
-
-        return cost - nrp.getBudget();
-    }
-
-    /**
      * Evaluates the score of the given solution. The score is defined as the
      * sum of weights of each customer who has this solution in their interest.
      *
@@ -57,5 +39,23 @@ abstract class NRPEvaluator implements Evaluator<String> {
             }
         }
         return score;
+    }
+
+    /**
+     * Evaluates the cost of the given solution. The cost is defined as the sum
+     * of each requirements cost.
+     *
+     * @param phenotype the potential solution
+     * @return cost
+     */
+    double evalCost(String phenotype) {
+        double cost = 0;
+        for (int i = 0; i < phenotype.length(); i++) {
+            if (phenotype.charAt(i) == '1') {
+                cost += nrp.getRequirement(i).getCost();
+            }
+        }
+
+        return cost;
     }
 }

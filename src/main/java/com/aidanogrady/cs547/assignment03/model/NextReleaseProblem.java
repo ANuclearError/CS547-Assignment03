@@ -141,10 +141,20 @@ public class NextReleaseProblem {
     public double score(int requirementIndex) {
         if (requirementIndex < 0 || requirementIndex >= requirements.size())
             return 0;
+
         double score = 0;
+
         for (Customer customer : customers) {
             if (customer.hasRequirement(requirementIndex)) {
-                score += customer.getWeight();
+                int size = customer.getRequirements().size();
+
+                double div = 0;
+                for (int i = 1; i <= size; i++) {
+                    div += i;
+                }
+                double num = size - customer.getRequirements().indexOf(requirementIndex);
+
+                score += customer.getWeight() * (num / div);
             }
         }
         return score;

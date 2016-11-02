@@ -147,7 +147,7 @@ public class FileParser {
             for (int i = 0; i < reqSize; i++) {
                 int id = Integer.parseInt(arr[i + 2]);
                 if (requirements.size() > id) {
-                    reqs.add(id);
+                    reqs.add(--id);
                 }
             }
             customers.add(new Customer(weight, reqs));
