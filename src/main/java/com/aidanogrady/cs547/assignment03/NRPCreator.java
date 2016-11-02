@@ -17,7 +17,7 @@ public class NRPCreator implements Creator<BooleanGenotype> {
     /**
      * The problem representation.
      */
-    protected final NextReleaseProblem nrp;
+    private final NextReleaseProblem nrp;
 
     /**
      * The random generator.

@@ -1,41 +1,27 @@
-package com.aidanogrady.cs547.assignment03;
+package com.aidanogrady.cs547.assignment03.eval;
 
 import com.aidanogrady.cs547.assignment03.model.NextReleaseProblem;
-import com.google.inject.Inject;
-import org.opt4j.core.Objective;
-import org.opt4j.core.Objectives;
 import org.opt4j.core.problem.Evaluator;
 
 /**
- * Evaluates the given solution. Each solution is evaluated by its score and
- * cost. The cost of the solution should be low, while the score of the system
- * should be high.
+ * TODO: Add Class Desc.
  *
  * @author Aidan O'Grady
- * @since 0.2
+ * @since TODO: Add Version
  */
-public class NRPEvaluator implements Evaluator<String> {
+abstract class NRPEvaluator implements Evaluator<String> {
     /**
      * The problem representation.
      */
-    protected NextReleaseProblem nrp;
+    private NextReleaseProblem nrp;
 
     /**
-     * Constructs a new NRP evaluator.
+     * Constructs a new NRPEvaluator.
      *
      * @param nrp the problem space
      */
-    @Inject
-    public NRPEvaluator(NextReleaseProblem nrp) {
+    NRPEvaluator(NextReleaseProblem nrp) {
         this.nrp = nrp;
-    }
-
-    @Override
-    public Objectives evaluate(String phenotype) {
-        Objectives objectives = new Objectives();
-        objectives.add("Cost", Objective.Sign.MIN, evalCost(phenotype));
-        objectives.add("Score", Objective.Sign.MAX, evalScore(phenotype));
-        return objectives;
     }
 
     /**
@@ -45,7 +31,7 @@ public class NRPEvaluator implements Evaluator<String> {
      * @param phenotype the potential solution
      * @return cost
      */
-    private double evalCost(String phenotype) {
+    double evalCost(String phenotype) {
         double cost = 0;
         for (int i = 0; i < phenotype.length(); i++) {
             if (phenotype.charAt(i) == '1') {
@@ -53,7 +39,7 @@ public class NRPEvaluator implements Evaluator<String> {
             }
         }
 
-        return Math.abs(cost - nrp.getBudget());
+        return cost - nrp.getBudget();
     }
 
     /**
@@ -63,7 +49,7 @@ public class NRPEvaluator implements Evaluator<String> {
      * @param phenotype the potential solution
      * @return score
      */
-    private double evalScore(String phenotype) {
+    double evalScore(String phenotype) {
         double score = 0;
         for (int i = 0; i < phenotype.length(); i++) {
             if (phenotype.charAt(i) == '1') {

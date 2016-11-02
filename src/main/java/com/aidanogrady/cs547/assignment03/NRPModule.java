@@ -1,5 +1,6 @@
 package com.aidanogrady.cs547.assignment03;
 
+import com.aidanogrady.cs547.assignment03.eval.NRPMultiObjEvaluator;
 import org.opt4j.core.problem.ProblemModule;
 import org.opt4j.core.start.Constant;
 
@@ -13,10 +14,13 @@ import org.opt4j.core.start.Constant;
 public class NRPModule extends ProblemModule {
 
     @Constant(value = "file")
-    protected String file = "C:\\Users\\aidan\\Desktop\\workspace\\CS547-Assignment03\\data\\classic\\nrp1.txt";
+    private String file = "C:\\Users\\aidan\\Desktop\\workspace\\CS547-Assignment03\\data\\classic\\nrp1.txt";
 
     @Constant(value = "costRatio")
-    protected double costRatio = 0.3;
+    private double costRatio = 0.3;
+
+    @Constant(value = "weight")
+    private double weight;
 
     public String getFile() {
         return file;
@@ -34,8 +38,16 @@ public class NRPModule extends ProblemModule {
         this.costRatio = costRatio;
     }
 
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
     @Override
     protected void config() {
-        bindProblem(NRPCreator.class, NRPDecoder.class, NRPEvaluator.class);
+        bindProblem(NRPCreator.class, NRPDecoder.class, NRPMultiObjEvaluator.class);
     }
 }
