@@ -1,14 +1,14 @@
 package com.aidanogrady.cs547.assignment03;
 
-import com.aidanogrady.cs547.assignment03.model.NextReleaseProblem;
 import org.opt4j.core.problem.ProblemModule;
 import org.opt4j.core.start.Constant;
 
 /**
- * TODO: Add Class Desc.
+ * The NRPModule contains the configuration of the Opt4J module, ensuring that
+ * the proper classes are bound together.
  *
  * @author Aidan O'Grady
- * @since TODO: Add Version
+ * @since 0.2
  */
 public class NRPModule extends ProblemModule {
 
