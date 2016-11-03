@@ -141,24 +141,25 @@ public class NextReleaseProblem {
      * Returns the score of the given requirement, by examining each customers'
      * own requirements.
      *
-     * @param requirementIndex the requirement being scored.
+     * @param reqIndex the requirement being scored.
      * @return score
      */
-    public double score(int requirementIndex) {
-        if (requirementIndex < 0 || requirementIndex >= requirements.size())
+    public double score(int reqIndex) {
+        if (reqIndex < 0 || reqIndex >= requirements.size())
             return 0;
 
         double score = 0;
 
         for (Customer customer : customers) {
-            if (customer.hasRequirement(requirementIndex)) {
+            if (customer.hasRequirement(reqIndex)) {
+                int index = customer.getRequirements().indexOf(reqIndex);
                 int size = customer.getRequirements().size();
 
                 double div = 0;
                 for (int i = 1; i <= size; i++) {
                     div += i;
                 }
-                double num = size - customer.getRequirements().indexOf(requirementIndex);
+                double num = size - index;
 
                 score += customer.getWeight() * (num / div);
             }

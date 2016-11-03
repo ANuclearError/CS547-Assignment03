@@ -16,11 +16,6 @@ import org.opt4j.core.Objectives;
  */
 public class NRPMultiObjEvaluator extends NRPEvaluator {
     /**
-     * The problem representation.
-     */
-    protected NextReleaseProblem nrp;
-
-    /**
      * Constructs a new NRP evaluator.
      *
      * @param nrp the problem space

@@ -16,7 +16,7 @@ abstract class NRPEvaluator implements Evaluator<String> {
     /**
      * The problem representation.
      */
-    private NextReleaseProblem nrp;
+    private final NextReleaseProblem nrp;
 
     /**
      * Constructs a new NRPEvaluator.

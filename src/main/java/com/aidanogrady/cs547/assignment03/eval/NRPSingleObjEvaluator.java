@@ -17,7 +17,7 @@ public class NRPSingleObjEvaluator extends NRPEvaluator {
     /**
      * The weight used for the weighted-sum fitness.
      */
-    private double weight;
+    private final double weight;
 
     /**
      * Constructs a new NRPEvaluator.
