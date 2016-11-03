@@ -155,10 +155,7 @@ public class NextReleaseProblem {
                 int index = customer.getRequirements().indexOf(reqIndex);
                 int size = customer.getRequirements().size();
 
-                double div = 0;
-                for (int i = 1; i <= size; i++) {
-                    div += i;
-                }
+                double div = (size * (size + 1)) / 2;
                 double num = size - index;
 
                 score += customer.getWeight() * (num / div);

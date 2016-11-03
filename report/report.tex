@@ -1,4 +1,4 @@
-\documentclass[11pt, a4paper]{article}
+\documentclass[10pt, a4paper]{article}
 \usepackage[parfill]{parskip}
 \usepackage[margin=0.9in]{geometry}
 \usepackage{url}
@@ -19,17 +19,120 @@
 \author{Aidan O'Grady - 201218150}
 \date{}
 \maketitle
-\tableofcontents
-\newpage
 
 \section{Overview}
 \label{sec:overview}
-Overview here.
+The task given revolved around the prioritisation of a set of requirements and
+a set of customers, and to compare how to achieve an optimal solution utilising
+both multi-objective and single-objective optimisation, using a random search
+optimisation as a baseline for comparison, achieved with the Opt4J framework.
+
+Known as the Next Release Problem, a software developer has a list of
+requirements to be implemented for the next release, each with a certain cost
+and dependencies on other requirements. In addition to these requirements, the
+developer has a list of customers who each desire different requirements for
+their own needs, with each customer having a weight given to them to indicate
+their important to the developer.
 % section overview (end)
 
 \section{Problem Representation}
 \label{sec:problem_representation}
-Problem representation here.
+\subsection{The Input File} % (fold)
+\label{sub:the_input_file}
+The data for requirements and customers were stored in a file made up of three
+segments:
+
+\begin{enumerate}
+    \item The number of requirements and their cost.
+    \item The dependencies between requirements.
+    \item The customers, their weight to the company and their own requirements.
+\end{enumerate}
+
+Segment 1 starts by declaring the levels of requirements (ignored in evaluation
+as per instructions), and is followed by two lines per level: the number of
+requirements at said level in one line, and the proceeding line listing the cost
+of each requirement. The position of the cost in this line indicates the ID of
+the requirement.
+
+Segment 2 starts by declaring the number of dependencies \emph{d}, with the
+proceeding \emph{d} lines being pairs of IDs specifying these dependencies.
+Again, instructions specify that these can be ignored.
+
+Finally, Segment 3 again starts by declaring the number of customers \emph{c},
+with the next \emph{c} lines listing the weight, number of requirements and then
+those requirements.
+% subsection the_input_file (end)
+
+\subsection{Storing Data} % (fold)
+\label{sub:storing_data}
+The problem requires maintaining two collections: the requirements and the
+customers. To represent these, two classes \emph{Requirement} and
+\emph{Customer} were used to contain the required information after being parsed
+from the input file.
+
+The \emph{Requirement} class contained the level, cost and list of the IDs of
+requirements it depends on. The \emph{Customer} class contains a list of IDs of
+requirements it wants, and the customer's weight.
+% subsection storing_data (end)
+
+\subsection{Solution Representation} % (fold)
+\label{sub:Solution_representation}
+As part of the Opt4J framework, a decision had to be made on representing a
+potential solution as a genotype and phenotype as required for the framework.
+
+I decided that, given a total of \emph{n} requirements, a \emph{BooleanGenotype}
+would be the best genotype representation of a solution. Each genotype would
+generate \emph{n} boolean values to indicate whether the requirement is present
+or not in the solution, meaning it is very simple to convert into the phenotype.
+
+For decoding genotypes into phenotypes, the use of a \emph{BooleanGenotype} made
+the decoding very straight forward, since each boolean could be converted into a
+`0' or '1' depending on the value.
+% subsection genotype_representation (end)
+
+\subsection{Fitness Functions} % (fold)
+\label{sub:fitness_functions}
+As part of evaluating a solution, in both a multi-objective and single-objective
+optimisation, the two important factors for evaluating had to be defined: cost
+and score.
+
+\subsubsection{Cost} % (fold)
+\label{ssub:cost}
+The cost is simply the difference between a summation of each present
+requirement's cost and the given budget of the problem space. The budget is
+calculated by calculating the sum of all requirements' costs, and then
+multiplying by a specified `cost ratio' value. By calculating this difference,
+tolerance is allowed for being slightly over-budget or under-budget if it yields
+a sufficiently improved score.
+
+For the purposes of multi-objective optimisation, the cost should be minimised
+to achieve an optimal solution.
+% subsubsection cost (end)
+
+\subsubsection{Score} % (fold)
+\label{ssub:score}
+Calculating score is slightly more complex. For every present requirement, all
+customers who desire that requirement must be obtained. For each of these
+customers, the value of that requirement must be calculated.
+
+The value a customer \(c\) places on a requirement \(r\) is:
+\[w * \frac{n - i}{1 + 2 + ... + n}\]
+Where \(w\) is the weight of the customer, \(n\) is the number of requirements
+of \(c\), and \(i\) is the 0-based index of \(r\) in \(c\)'s list.
+
+For the purposes of multi-objective optimisation, the cost should be maximised
+to achieve an optimal solution.
+% subsubsection score (end)
+
+\subsubsection{Single Objective} % (fold)
+\label{ssub:single_objective}
+The single-objective optimisation uses a weighted-sum approach using the fitness
+functions defined above. The weight is determined by user input using Opt4J, and
+since we have a case where one objective is maximised and other is minimised,
+the weighted-sum is tweaked to be:
+\[F(x) = w \times score(x) - (1 - w) \times cost(x)\]
+% subsubsection single_objective (end)
+% subsection fitness_functions (end)
 % section problem_representation (end)
 
 \section{Implementation}
