@@ -30,7 +30,7 @@ public class NRPSingleObjModule extends ProblemModule {
      * The cost fitness function's weight is 1 - this value.
      */
     @Constant(value = "weight")
-    private double weight = 0.5;
+    private double weight = 0.7;
 
     /**
      * Returns the filename.

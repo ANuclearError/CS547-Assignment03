@@ -58,7 +58,6 @@ abstract class NRPEvaluator implements Evaluator<String> {
                 cost += nrp.getRequirement(i).getCost();
             }
         }
-        // The closer the cost is to budget, the more ideal.
-        return Math.abs(cost - nrp.getBudget());
+        return cost;
     }
 }
