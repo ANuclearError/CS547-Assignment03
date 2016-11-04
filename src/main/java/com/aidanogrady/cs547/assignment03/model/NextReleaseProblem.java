@@ -51,6 +51,7 @@ public class NextReleaseProblem {
             budget += req.getCost();
         }
         budget *= costRatio;
+        System.out.println("The budget is: " + budget);
     }
 
     /**
