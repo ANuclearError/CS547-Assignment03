@@ -58,6 +58,7 @@ abstract class NRPEvaluator implements Evaluator<String> {
                 cost += nrp.getRequirement(i).getCost();
             }
         }
-        return cost;
+        // Cost is reflected as percentage of budget.
+        return cost / nrp.getBudget();
     }
 }
