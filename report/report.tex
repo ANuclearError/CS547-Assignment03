@@ -309,7 +309,13 @@ dataset, suggesting that the problem is within NSGA-II's selector instead.
 
 Overall, it seems that further tweaking would be required to improve
 multi-objective \& NSGA-II's score for the realistic dataset. Experimentation
-with the tournament size did not yield useful information for this purpose.
+with the tournament size did not yield useful information for this purpose. I
+was unable to discover the change required to ensure that multi-objective
+NSGA-II could create the same type of Pareto front with the realistic dataset
+that it did with classic. The much longer runtime for the realistic dataset made
+further investigation too time-consuming beyond small changes such as changing
+cost-ratio or tournament size, meaning that the source could not be found in
+time.
 % subsubsection realistic_dataset (end)
 % subsection analysis (end)
 
