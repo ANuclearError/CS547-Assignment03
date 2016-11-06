@@ -34,7 +34,7 @@ abstract class NRPEvaluator implements Evaluator<String> {
      * @param phenotype the potential solution
      * @return score
      */
-    double evalScore(String phenotype) {
+    public double evalScore(String phenotype) {
         double score = 0;
         for (int i = 0; i < phenotype.length(); i++) {
             if (phenotype.charAt(i) == '1') {
@@ -51,14 +51,14 @@ abstract class NRPEvaluator implements Evaluator<String> {
      * @param phenotype the potential solution
      * @return cost
      */
-    double evalCost(String phenotype) {
+    public double evalCost(String phenotype) {
         double cost = 0;
         for (int i = 0; i < phenotype.length(); i++) {
             if (phenotype.charAt(i) == '1') {
                 cost += nrp.getRequirement(i).getCost();
             }
         }
-        // Cost is reflected as percentage of budget.
-        return cost / nrp.getBudget();
+        // Cost is reflected as negated percentage of budget.
+        return 0 - (cost / nrp.getBudget());
     }
 }

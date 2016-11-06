@@ -1,6 +1,6 @@
-\documentclass[10pt, a4paper]{article}
+\documentclass[11pt, a4paper]{article}
 \usepackage[parfill]{parskip}
-\usepackage[margin=0.9in]{geometry}
+\usepackage[margin=0.75in]{geometry}
 \usepackage{url}
 \usepackage{listings}
 
@@ -77,17 +77,10 @@ requirements it wants, and the customer's weight.
 
 \subsection{Solution Representation} % (fold)
 \label{sub:Solution_representation}
-As part of the Opt4J framework, a decision had to be made on representing a
-potential solution as a genotype and phenotype as required for the framework.
-
-I decided that, given a total of \emph{n} requirements, a \emph{BooleanGenotype}
-would be the best genotype representation of a solution. Each genotype would
-generate \emph{n} boolean values to indicate whether the requirement is present
-or not in the solution, meaning it is very simple to convert into the phenotype.
-
-For decoding genotypes into phenotypes, the use of a \emph{BooleanGenotype} made
-the decoding very straight forward, since each boolean could be converted into a
-`0' or '1' depending on the value.
+When calculating the score and cost of a given solution, a binary string is used
+to represent the solution. If there are \(n\) requirements, then the length of
+the string is also \(n\). A `0' indicates the requirement is not present, while
+a `1' indicates it is.
 % subsection genotype_representation (end)
 
 \subsection{Fitness Functions} % (fold)
@@ -98,14 +91,16 @@ and score.
 
 \subsubsection{Cost} % (fold)
 \label{ssub:cost}
-The cost is simply the difference between a summation of each present
-requirement's cost and the given budget of the problem space. The budget is
-calculated by calculating the sum of all requirements' costs, and then
-multiplying by a specified `cost ratio' value. By calculating this difference,
-tolerance is allowed for being slightly over-budget or under-budget if it yields
-a sufficiently improved score.
+The cost of a solution set \(x\) is calculated as follows:
+\[- \frac{\sum_{i=1}^{n} cost_i \cdot x_i}{budget} \]
+Where \(n\) is the total number of requirements, \(cost_i\) is the cost of
+requirement \(i\). The budget is the sum of all requirement costs multiplied by
+a cost-ratio (typically between 0.3 and 0.5). If the budget is 300, and a
+solution's requirements sum to 330, the cost is evaluated as -1.1. The cost is
+negated to allow for both fitness functions to be maximised for optimisation,
+which made the single-objective easier to approach.
 
-For the purposes of multi-objective optimisation, the cost should be minimised
+For the purposes of multi-objective optimisation, the cost should be maximised
 to achieve an optimal solution.
 % subsubsection cost (end)
 
@@ -130,7 +125,7 @@ The single-objective optimisation uses a weighted-sum approach using the fitness
 functions defined above. The weight is determined by user input using Opt4J, and
 since we have a case where one objective is maximised and other is minimised,
 the weighted-sum is tweaked to be:
-\[F(x) = w \times score(x) - (1 - w) \times cost(x)\]
+\[F(x) = w \times score(x) + (1 - w) \times cost(x)\]
 
 Where \(x\) is the solution candidate and \(w\) is the user-defined weight
 value.
@@ -140,10 +135,107 @@ value.
 
 \section{Implementation}
 \label{sec:implementation}
-Implementation details here.
+Since Opt4J was used for this assignment, the bulk of code implemented was for
+the file parsing and classes storing the parsed data.
 % section implementation (end)
+\subsection{File Parsing} % (fold)
+\label{sub:file_parsing}
+The file parsing was relatively straightforward. The parser first read each line
+into a list for easier manipulation in the future.
 
+Since the file always declares the number of requirements, dependencies and
+customers, I was able to use these to split the initial list into three separate
+lists each containing a segment of the file. Opt4J's system meant that I was
+was more comfortable just throwing exceptions when a problem with the parsing
+occurred, since it ensured that Opt4J did not try to use an invalid file. As
+such, \emph{Integer.parseInt(string)} was used liberally throughout the parsing
+rather than the use of scanner, since if it failed then Opt4J would not be able
+to proceed.
 
+The use of injection allowed for the \emph{NextReleaseProblem} constructor to
+inject the location of the input file and the cost ratio for budget calculation
+to be used. The object would then be able to store the data read from the file.
+This object would then later be injected into the \emph{Creator} and
+\emph{Evaluator} classes.
+% subsection file_parsing (end)
+
+\subsection{Creator} % (fold)
+\label{sub:creator}
+The creator was very straightforward to implement. Since the representation
+being used was a binary string, Opt4J's \emph{BooleanGenotype} was extremely
+suitable for this problem. The injected \emph{NextReleaseProblem} contains the
+number of requirements, which is passed into the creator's \emph{init} method to
+ensure that the resulting genotype has a random boolean for each requirement.
+
+The genotype is essentially a list of boolean values, making it very easy to
+decode and convert into a list of \emph{Requirement}s.
+% subsection creator (end)
+
+\subsection{Decoder} % (fold)
+\label{sub:decoder}
+Similarly to the creator, the decoder is very simple. It merely iterates through
+the genotype and converts each boolean into a `0' or '1', creating a binary
+string that reflects the potential solution. The decoder does not require any
+injection, which again makes it very simple to implement.
+% subsection decoder (end)
+
+\subsection{Evaluator} % (fold)
+\label{sub:evaluator}
+Since single-objective and multi-objective optimisation each handle evaluation
+different, a \emph{NRPEvaluator} abstract class was implemented. The evaluators
+for score and cost are implemented in this class, with classes for both methods
+of optimisation extends this class to use these fitness functions as needed.
+
+injection is again used
+
+\subsubsection{Score} % (fold)
+\label{ssub:impl_score}
+The score evaluator iterates through the phenotype (decoded string), and for
+each character equal to `1', the score for that requirement is found.
+\emph{NextReleaseProblem}'s \emph{score(int reqIndex)} method then calculates
+the score for that requirement based on the index. Section \ref{ssub:score}
+shows the formula used to calculate this individual score, with the final score
+being the summation of these scores for each present requirement.
+% subsubsection impl_score (end)
+
+\subsubsection{Cost} % (fold)
+\label{ssub:impl_cost}
+The cost also iterates through the phenotype, adding the cost for each present
+requirement. This is when divided by the budget calculated using the cost ratio
+and negated. During the implementation, various other methods of calculating
+cost were considered, such as using the absolute difference between the cost and
+budget, rewarding costs closer to the budget rather than simply rewarding
+smaller budgets. I felt that this simpler method of evaluating cost as a
+percentage would be more ideal with analysing costs.
+% subsubsection impl_cost (end)
+
+\subsubsection{Multi-Objective} % (fold)
+\label{ssub:impl_multi_objective}
+The multi-objective evaluator includes two different objectives, one for score
+and one for score. Both objectives are to be maximised, as a result of the cost
+negation.
+% subsubsection impl_multi_objective (end)
+
+\subsubsection{Single-Objective} % (fold)
+\label{ssub:impl_single_objective}
+The single-objective evaluator includes an additional method, \emph(eval()),
+that uses the weighted-sum to combine the two fitness functions into a single
+fitness value.
+% subsubsection impl_single_objective (end)
+% subsection evaluator (end)
+
+\subsection{Modules} % (fold)
+\label{sub:modules}
+Separate modules were implemented for multi-objective and single-objective
+optimisation. The problem requires an input file and cost-ratio as parameters
+for both problems, while the single-objective module also requires a parameter
+for the weight as well. The \emph{Constant} annotation ensures that these values
+are able to be injected elsewhere as required, with the constructors that
+require these parameters injecting the constants to ensure that they can be
+used.
+% subsection modules (end)
+
+\newpage
 \section{Comparison}
 \label{sec:comparison}
 
@@ -154,7 +246,15 @@ Configuration that lead to results.
 
 \subsection{Results} % (fold)
 \label{sub:results}
-Results from Opt4J.
+\subsubsection{Classic Data} % (fold)
+\label{ssub:classic_data}
+
+% subsubsection classic_data (end)
+
+\subsubsection{Realistic Data} % (fold)
+\label{ssub:realistic_data}
+
+% subsubsection realistic_data (end)
 % subsection results (end)
 
 \subsection{Analysis} % (fold)

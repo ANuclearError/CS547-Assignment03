@@ -29,7 +29,7 @@ public class NRPMultiObjEvaluator extends NRPEvaluator {
     public Objectives evaluate(String phenotype) {
         Objectives objectives = new Objectives();
         objectives.add("Score", Objective.Sign.MAX, evalScore(phenotype));
-        objectives.add("Cost", Objective.Sign.MIN, evalCost(phenotype));
+        objectives.add("Cost", Objective.Sign.MAX, evalCost(phenotype));
         return objectives;
     }
 

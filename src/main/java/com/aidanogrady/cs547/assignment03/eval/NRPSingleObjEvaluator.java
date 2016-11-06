@@ -52,7 +52,7 @@ public class NRPSingleObjEvaluator extends NRPEvaluator {
      */
     private double eval(String phenotype) {
         double score = weight * evalScore(phenotype);
-        double cost = (1 - weight) * (1 / evalCost(phenotype));
+        double cost = (1 - weight) * evalCost(phenotype);
         return score + cost;
     }
 }
