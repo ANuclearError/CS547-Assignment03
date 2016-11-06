@@ -273,7 +273,7 @@ multi-objective, and indeed rather convincingly.
 
 \subsubsection{Classic Dataset} % (fold)
 \label{ssub:classic_dataset}
-The classic dataset shows that Multi-Objective and Single-Objective both perform
+The classic dataset shows that multi-objective and single-objective both perform
 much better than random search, forming a Pareto front. When focusing on
 solutions near the budget (Y-axis value of -1), we can see that the resulting
 score falls between 0.6 and 0.7, which is also obtained by the Single-Objective
@@ -287,7 +287,29 @@ score that is half that of the Multi-Objective/NGSA-II score with the same cost.
 
 \subsubsection{Realistic Dataset} % (fold)
 \label{ssub:realistic_dataset}
+The results obtained from the realistic dataset are concerning, since they show
+a monumental difference between the multi-objective NSGA-II results and the
+single-objective results, with the latter performing far better. Multi-objective
+is still shown to be better than a random search, but the results from it are
+far from ideal.
 
+The only results obtained from multi-objective NSGA-II are with scores between
+0.5 and 0.65 with costs between -1.25 and -1.6, which is very different from the
+results from the classic dataset, this suggests that the optimisation is having
+problems with the much larger dataset. The single-objective however, does not
+have these problems, creating a similar Pareto front seen with the classic
+dataset. It suggests that using 100\% of the budget should yield a score of
+around 0.6 to 0.65, but instead multi-objective NSGA-II does not return any
+results with near that cost.
+
+What is interesting is seeing what happens when the multi-objective module uses
+the \emph{ElitismSelector} rather than NSGA-II. It shows that the resultant
+single-objective created follows the same pattern it did with the classic
+dataset, suggesting that the problem is within NSGA-II's selector instead.
+
+Overall, it seems that further tweaking would be required to improve
+multi-objective \& NSGA-II's score for the realistic dataset. Experimentation
+with the tournament size did not yield useful information for this purpose.
 % subsubsection realistic_dataset (end)
 % subsection analysis (end)
 
