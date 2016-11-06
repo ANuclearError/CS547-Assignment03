@@ -1,8 +1,10 @@
 \documentclass[11pt, a4paper]{article}
 \usepackage[parfill]{parskip}
-\usepackage[margin=0.75in]{geometry}
+\usepackage[margin=0.9in]{geometry}
 \usepackage{url}
 \usepackage{listings}
+\usepackage{graphicx}
+\usepackage{float}
 
 \lstdefinestyle{snippet}{
     numbers = left,
@@ -235,32 +237,77 @@ require these parameters injecting the constants to ensure that they can be
 used.
 % subsection modules (end)
 
-\newpage
 \section{Comparison}
 \label{sec:comparison}
 
 \subsection{Configuration} % (fold)
 \label{sub:configuration}
-Configuration that lead to results.
+A single file was chosen from the classic dataset and realistic dataset, with
+the intention to compare four searches:
+\begin{itemize}
+    \item Multi-Objective using NSGA-II.
+    \item Multi-Objective using ElitismSelector (single objective)
+    \item Single-Objective weighted-sum
+    \item Random Search
+\end{itemize}
+
+With Opt4J, the \emph{EvolutionaryAlgorithm} was used for single and multiple
+objective optimisation, with the same default configuration of 1000 generations,
+alpha of 100, mu and lambda of 25 and a 0.95 crossover rate. \emph{RandomSearch}
+had a batch size of 25, and 1000 iterations. When NSGA-II was used, a tournament
+size of 10 was selected. For weighted-sum, the sum was incremented by 0.1 from
+0.1 up to 0.9, which the 9 results obtained being plotted after determining the
+score and cost of the string.
 % subsection configuration (end)
-
-\subsection{Results} % (fold)
-\label{sub:results}
-\subsubsection{Classic Data} % (fold)
-\label{ssub:classic_data}
-
-% subsubsection classic_data (end)
-
-\subsubsection{Realistic Data} % (fold)
-\label{ssub:realistic_data}
-
-% subsubsection realistic_data (end)
-% subsection results (end)
 
 \subsection{Analysis} % (fold)
 \label{sub:analysis}
-Analysis of results.
+Section \ref{sub:results} shows the results, with Figure \ref{fig:classic}
+showing the results from a classic dataset, and Figure \ref{fig:realistic} 
+showing the results from a realistic dataset.
+
+As you can see, while the classic data showed no problems with the results,
+there are some peculiarities regarding the realistic data. It is clear to see
+that in both cases, random search is being out-performed by both single and
+multi-objective, and indeed rather convincingly. 
+
+\subsubsection{Classic Dataset} % (fold)
+\label{ssub:classic_dataset}
+The classic dataset shows that Multi-Objective and Single-Objective both perform
+much better than random search, forming a Pareto front. When focusing on
+solutions near the budget (Y-axis value of -1), we can see that the resulting
+score falls between 0.6 and 0.7, which is also obtained by the Single-Objective
+when the given weight is around 0.725. It is interesting to note that with
+the \emph{ElitismSelector} used with the Multi-Objective module to perform
+single-objective optimisation, the results start to worsen off as the cost goes
+up, with the scores being no better than random search when 100\% of the budget
+is surpassed. The random search's result that is closest to the budget had a
+score that is half that of the Multi-Objective/NGSA-II score with the same cost.
+% subsubsection classic_dataset (end)
+
+\subsubsection{Realistic Dataset} % (fold)
+\label{ssub:realistic_dataset}
+
+% subsubsection realistic_dataset (end)
 % subsection analysis (end)
+
+\newpage
+\subsection{Results} % (fold)
+\label{sub:results}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{img/classic}
+    \caption{Classic dataset results obtained from nrp1.txt}
+    \label{fig:classic}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{img/realistic}
+    \caption{Realistic dataset results obtained from nrp-e1.txt}
+    \label{fig:realistic}
+\end{figure}
+% subsection results (end)
 % section comparison (end)
 
 % \bibliographystyle{plain}
