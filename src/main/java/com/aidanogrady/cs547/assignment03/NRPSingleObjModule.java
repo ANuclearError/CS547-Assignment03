@@ -17,7 +17,7 @@ public class NRPSingleObjModule extends ProblemModule {
      * The file to read data from.
      */
     @Constant(value = "file")
-    private String file = "C:\\Users\\aidan\\Desktop\\workspace\\CS547-Assignment03\\data\\classic\\nrp1.txt";
+    private String file = "";
 
     /**
      * The cost ratio used to determine budget.
