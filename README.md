@@ -14,7 +14,10 @@ in Computer Science for the MEng Computer Science course in the University of
 Strathclyde, Glasgow.
 
 ## How to Run
-```java -jar CS547-Assignment03-AidanOGrady.jar```
-
-## Output
-TODO
+1. Install [Opt4J](http://opt4j.sourceforge.net/)
+2. Copy the directory from .zip into some location.
+3. Copy JAR into `plugins` directory.
+4. In Opt4J, load a configuration file.
+  * If Single-Objective, change the weight to value between 0.1 - 0.9.
+  * Ensure that the file location matches the location of where datasets are.
+5. Click Run.
