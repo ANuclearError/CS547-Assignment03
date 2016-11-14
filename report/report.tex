@@ -1,6 +1,6 @@
 \documentclass[11pt, a4paper]{article}
 \usepackage[parfill]{parskip}
-\usepackage[margin=0.75in]{geometry}
+\usepackage[margin=1in]{geometry}
 \usepackage{url}
 \usepackage{listings}
 \usepackage{graphicx}
@@ -93,17 +93,20 @@ and score.
 
 \subsubsection{Cost} % (fold)
 \label{ssub:cost}
-The cost of a solution set \(x\) is calculated as follows:
-\[- \frac{\sum_{i=1}^{n} cost_i \cdot x_i}{budget} \]
-Where \(n\) is the total number of requirements, \(cost_i\) is the cost of
-requirement \(i\). The budget is the sum of all requirement costs multiplied by
-a cost-ratio (typically between 0.3 and 0.5). If the budget is 300, and a
-solution's requirements sum to 330, the cost is evaluated as -1.1. The cost is
-negated to allow for both fitness functions to be maximised for optimisation,
-which made the single-objective easier to approach.
+The cost of a solution subset \(r\) of the set of requirements \(R\) is
+calculated as follows:
+\[- \frac{\sum_{i=1}^{n} cost_i \cdot x_i}{\sum_{i=1}^{n} cost_i} \]
+Where \(n\) is the total number of requirements in \(R\), \(cost_i\) is the cost
+of requirement \(i\) in \(R\) and \(x_i\) is 1 if requirement \(i\) is present
+(0 otherwise).
 
-For the purposes of multi-objective optimisation, the cost should be maximised
-to achieve an optimal solution.
+The cost is represented as a percentage of the cost of all requirements, so a
+cost of 1 means a percentage of 100\%. The evaluation is not concerned with
+budget, but since the budget representation of a cost ratio means that for a
+given cost ratio (such as 0.3), it is simple to determine how close a cost value
+is to that cost ratio. The cost is then negated to allow for both fitness
+functions to be maximised for optimisation, which makes the single-objective
+easier to approach.
 % subsubsection cost (end)
 
 \subsubsection{Score} % (fold)
@@ -116,6 +119,12 @@ The value a customer \(c\) places on a requirement \(r\) is:
 \[w * \frac{n - i}{1 + 2 + ... + n}\]
 Where \(w\) is the weight of the customer, \(n\) is the number of requirements
 of \(c\), and \(i\) is the 0-based index of \(r\) in \(c\)'s list.
+
+Consider customer \(A\)'s requirements `10 20', and customer \(B\)'s
+requirements `10 15 20'. Assuming both customers have equal value, then
+requirement 10 would have a higher score from \(A\) than \(B\) since \(A\) has
+fewer total requirements. It is assumed that all customers have the same sum
+amount of `care' to be spread across all requirements they are interested.
 
 For the purposes of multi-objective optimisation, the cost should be maximised
 to achieve an optimal solution.
@@ -229,7 +238,7 @@ fitness value.
 \subsection{Modules} % (fold)
 \label{sub:modules}
 Separate modules were implemented for multi-objective and single-objective
-optimisation. The problem requires an input file and cost-ratio as parameters
+optimisation. The problem requires an input file and cost ratio as parameters
 for both problems, while the single-objective module also requires a parameter
 for the weight as well. The \emph{Constant} annotation ensures that these values
 are able to be injected elsewhere as required, with the constructors that
@@ -243,21 +252,42 @@ used.
 \subsection{Configuration} % (fold)
 \label{sub:configuration}
 A single file was chosen from the classic dataset and realistic dataset, with
-the intention to compare four searches:
+the intention to compare three searches:
 \begin{itemize}
-    \item Multi-Objective using NSGA-II.
-    \item Multi-Objective using ElitismSelector (single objective)
+    \item Multi-Objective using NSGA-II
     \item Single-Objective weighted-sum
     \item Random Search
 \end{itemize}
 
-With Opt4J, the \emph{EvolutionaryAlgorithm} was used for single and multiple
-objective optimisation, with the same default configuration of 1000 generations,
-alpha of 100, mu and lambda of 25 and a 0.95 crossover rate. \emph{RandomSearch}
-had a batch size of 25, and 1000 iterations. When NSGA-II was used, a tournament
-size of 10 was selected. For weighted-sum, the sum was incremented by 0.1 from
-0.1 up to 0.9, which the 9 results obtained being plotted after determining the
-score and cost of the string.
+The number of generations (or iterations in the case of random search) was
+dependant on the dataset being used and whether single or multi-objective was
+being performed. It was found that for the realistic dataset, the number of
+generations could be decreased without impact on score. The following table
+shows the configurations.
+
+\begin{center}
+\begin{tabular}{| l | c | c |}
+\hline
+Test & Selector & Generations \\
+\hline
+Classic Multi-Objective NSGA-II & \emph{EvolutionaryAlgorithm} & 1000 \\
+Classic Multi-Objective Random & \emph{RandomSearch} & 100 \\
+Classic Single-Objective NSGA-II & \emph{EvolutionaryAlgorithm} & 1000 \\
+Realistic Multi-Objective NSGA-II & \emph{EvolutionaryAlgorithm} & 20000 \\
+Realistic Multi-Objective Random & \emph{RandomSearch} & 100 \\
+Realistic Single-Objective NSGA-II & \emph{EvolutionaryAlgorithm} & 5000 \\
+\hline
+\end{tabular}    
+\end{center}
+
+All other configurations were kept the same, with a cost ratio of 0.3 being the
+focus of the comparisons. NSGA-II used a tournament size of 10, while the
+\emph{EvolutionaryAlgorithm} had a population size of 100 with 25 parents per
+generation and 25 offsprings produced per generation.
+
+For weighted-sum, the sum was incremented by 0.1 from 0.1 up to 0.9, which the
+9 results obtained being plotted after using the results' phenotypes to
+determine the score and cost of the string.
 % subsection configuration (end)
 
 \subsection{Analysis} % (fold)
@@ -266,78 +296,87 @@ Section \ref{sub:results} shows the results, with Figure \ref{fig:classic}
 showing the results from a classic dataset, and Figure \ref{fig:realistic} 
 showing the results from a realistic dataset.
 
-As you can see, while the classic data showed no problems with the results,
-there are some peculiarities regarding the realistic data. It is clear to see
-that in both cases, random search is being out-performed by both single and
-multi-objective, and indeed rather convincingly. 
-
 \subsubsection{Classic Dataset} % (fold)
 \label{ssub:classic_dataset}
-The classic dataset shows that multi-objective and single-objective both perform
-much better than random search, forming a Pareto front. When focusing on
-solutions near the budget (Y-axis value of -1), we can see that the resulting
-score falls between 0.6 and 0.7, which is also obtained by the Single-Objective
-when the given weight is around 0.725. Closer examining of the phenotypes that
-earned this score shows that around 45-50 requirements are being fulfilled in
-this area of the graph. In addition, amongst these requirements, 25
-\footnote{2 14 22 23 35 36 38 39 42 45 49 58 60 63 66 72 74 75 76 77 78 80 84 90
-92 96. Note that indexing means that these values will be 1 less than values in
-file.} requirements were consistently found amongst results, suggesting that
-these requirements score highly.
+In the classic dataset used, there are 100 customers and 140 requirements. The
+total cost of these requirements is 857, meaning that with a cost ratio of 0.3,
+the budget is 257.
 
-It is interesting to note that with the \emph{ElitismSelector} used with the
-Multi-Objective module to perform single-objective optimisation, the results
-start to worsen off as the cost goes up, with the scores being no better than
-random search when 100\% of the budget is surpassed. The random search's result
-that is closest to the budget had a score that is half that of the
-Multi-Objective/NGSA-II score with the same cost.
+The immediate takeaway from the results with the classic dataset is that both
+multi-objective and single-objective optimisation vastly outperform the random
+search in terms of results obtained. The Pareto front that forms from the
+multi-objective goes beyond the random search's results, resulting in much
+better scores with the same costs.
+
+The results of the single objective follow the same pattern as that as the
+multi-objective, with extreme weights causing results that fall on the extremes
+of the front. This suggests that there is little different between the two given
+the same configuration.
+
+Since we're using a cost ratio of 0.3, then we should look further at results
+whose cost fall around -0.3 in the graph. Of the 100 results obtained from the
+multi-objective search, there are 6 results whose costs fall between -0.275 and
+-0.325. These results had an average score of 0.64, and an average number of
+requirements found of 45. This means that 30\% budget found 30\% of
+requirements. It was also found that there were 36\footnote{These requirements
+being: 2 3 15 23 24 36 37 43 46 47 50 59 61 64 67 72 73 74 75 76 77 78 79 81 85
+93 97 99 101 104 116 120 123 133 134 137} requirements that were found in all 6
+of these results, indicating that they are perhaps the best requirements in
+terms of cost and customer satisfaction. In addition, it was also found that
+these requirements on average fulfilled at least one requirement for 90.67\% of
+customers. This shows good performance given the relatively low budget provided.
 % subsubsection classic_dataset (end)
 
 \subsubsection{Realistic Dataset} % (fold)
 \label{ssub:realistic_dataset}
-The results obtained from the realistic dataset are concerning, since they show
-a monumental difference between the multi-objective NSGA-II results and the
-single-objective results, with the latter performing far better. Multi-objective
-is still shown to be better than a random search, but the results from it are
-far from ideal.
+In this dataset, there are 536 customers with 3502 customers. The total sum of
+costs 13150, meaning that a budget of 3945 is obtained. This is a huge increase
+from the previous dataset, meaning that some peculiarities were encountered
+during the comparisons being performed.
 
-The only results obtained from multi-objective NSGA-II are with scores between
-0.5 and 0.65 with costs between -1.25 and -1.6, which is very different from the
-results from the classic dataset, this suggests that the optimisation is having
-problems with the much larger dataset. The single-objective however, does not
-have these problems, creating a similar Pareto front seen with the classic
-dataset. It suggests that using 100\% of the budget should yield a score of
-around 0.6 to 0.65, but instead multi-objective NSGA-II does not return any
-results with near that cost. This means that it is not possible to measure any
-meaningful trends in results that hover around the budget like with the classic
-dataset.
+Again, random search is soundly defeated by the objective based searches. A
+Pareto front is formed by the multi-objective front, which eclipses the results
+obtained by random search with ease. However, the single search appears to
+perform better than the multi-objective, which is certainly interesting. This
+is being done despite requirement far fewer generations to obtain these results,
+it is likely that a further increase to multi-objective search's number of
+generations would bridge this gap, but the time taken to execute search becomes
+unbearable at this point.
 
-What is interesting is seeing what happens when the multi-objective module uses
-the \emph{ElitismSelector} rather than NSGA-II. It shows that the resultant
-single-objective created follows the same pattern it did with the classic
-dataset, suggesting that the problem is within NSGA-II's selector instead.
+When looking at the results surrounding the cost ratio, we are looking at scores
+of around 0.55, which is a step down from the classic dataset. Again, 6 results
+are obtained from this area of the graph. These results had an average score of
+0.57, selecting 1275.33 requirements on average. This is roughly a third of all
+requirements again. 988 requirements were found across all 6 of these results
+as well, showing a similar trend to that of the smaller, classic dataset. Of the
+536 customers, these results satisfied 523 customers on average, resulting in
+97.6\% of customers having at least some satisfaction. It is perhaps more
+impressive that some customers were not being satisfied at all with these
+results, further analysis would be needed to find at which point this percentage
+of satisfied customers starts to severely drop off.
 
-Overall, it seems that further tweaking would be required to improve
-multi-objective \& NSGA-II's score for the realistic dataset. Experimentation
-with the tournament size did not yield useful information for this purpose. I
-was unable to discover the change required to ensure that multi-objective
-NSGA-II could create the same type of Pareto front with the realistic dataset
-that it did with classic. The much longer runtime for the realistic dataset made
-further investigation too time-consuming beyond small changes such as changing
-cost-ratio or tournament size, meaning that the source could not be found in
-time.
+Overall, it seems that the multi-objective searching does yield strong results,
+albeit it requirements many more generations to handle larger datasets. It is
+interesting to see that the analysis of the results of the graph can indicate
+which requirements should be prioritised, since they are the ones appearing in
+all results that surround the budget area of the graph. Due to the size of even
+the smaller dataset, it is difficult to present these graphs fully, hence the
+focus on these averages across multiple results.
 % subsubsection realistic_dataset (end)
 % subsection analysis (end)
 
 \newpage
 \subsection{Results} % (fold)
 \label{sub:results}
+\subsubsection{Classic Dataset Results} % (fold)
+\label{ssub:classic_dataset_results}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img/classic}
     \caption{Classic dataset results obtained from nrp1.txt}
     \label{fig:classic}
 \end{figure}
+% subsubsection classic_dataset_results (end)
 
 \begin{figure}[H]
     \centering
@@ -347,7 +386,4 @@ time.
 \end{figure}
 % subsection results (end)
 % section comparison (end)
-
-% \bibliographystyle{plain}
-% \bibliography{report} 
 \end{document}
