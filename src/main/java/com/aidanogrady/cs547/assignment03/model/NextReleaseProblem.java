@@ -26,6 +26,11 @@ public class NextReleaseProblem {
     private double costRatio;
 
     /**
+     * Sum of all requirement costs
+     */
+    private int costTotal;
+
+    /**
      * The list of customers.
      */
     private List<Customer> customers;
@@ -46,11 +51,12 @@ public class NextReleaseProblem {
             this.customers = parser.getCustomers();
         }
 
-        this.budget = 0;
+        this.costTotal = 0;
         for (Requirement req : requirements) {
-            budget += req.getCost();
+            costTotal += req.getCost();
         }
-        budget *= costRatio;
+        this.budget = (int) (costTotal * costRatio);
+        System.out.println("The cost total is: " + costTotal);
         System.out.println("The budget is: " + budget);
     }
 
@@ -88,6 +94,14 @@ public class NextReleaseProblem {
      */
     public void setCostRatio(double costRatio) {
         this.costRatio = costRatio;
+    }
+
+    public int getCostTotal() {
+        return costTotal;
+    }
+
+    public void setCostTotal(int costTotal) {
+        this.costTotal = costTotal;
     }
 
     /**

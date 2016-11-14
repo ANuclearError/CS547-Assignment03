@@ -59,6 +59,6 @@ abstract class NRPEvaluator implements Evaluator<String> {
             }
         }
         // Cost is reflected as negated percentage of budget.
-        return 0 - (cost / nrp.getBudget());
+        return 0 - (cost / nrp.getCostTotal());
     }
 }

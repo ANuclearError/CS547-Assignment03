@@ -1,0 +1,15 @@
+<configuration>
+  <module class="com.aidanogrady.cs547.assignment03.NRPMultiObjModule">
+    <property name="costRatio">0.3</property>
+    <property name="file"/>
+  </module>
+  <module class="org.opt4j.optimizers.rs.RandomSearchModule">
+    <property name="batchsize">25</property>
+    <property name="iterations">1000</property>
+  </module>
+  <module class="org.opt4j.viewer.ViewerModule">
+    <property name="closeEvent">STOP</property>
+    <property name="closeOnStop">false</property>
+    <property name="title">Opt4J 3.1.4 Viewer</property>
+  </module>
+</configuration>
